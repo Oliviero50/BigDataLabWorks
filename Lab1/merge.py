@@ -1,58 +1,39 @@
 import sys
 import os
-import csv
+
+def run():
+    if len(sys.argv) < 3:
+        print("Please provide a directory and output file name")
+        sys.exit(1)
+
+    path = sys.argv[1]
+    if not os.path.isdir(path):
+        print('Not a valid directory')
+        sys.exit(1)
+
+    filename = sys.argv[2]
+    
+    dir_cont = os.listdir(path)
+    files = [x for x in dir_cont if x.startswith('combined_data_')]
+
+    output = open(filename, "a+")
+
+    for file in files:
+        print("Working on file: " + file)
+        file = open(os.path.join(path, file))
+        movie_id = ''
+        while True:
+            line = file.readline().rstrip()
+            if not line:
+                break
+            if line.endswith(':'):
+                movie_id = line.split(':')[0]
+                continue
+            else:
+                output.write(movie_id + ',' + line + '\n')
+        file.close()
+    output.close()
 
 
-def get_file_name(input_dir, i):
-    return input_dir + "combined_data_" + str(i) + ".txt"
-
-
-# say hello
-print("\n*******************************")
-print("Hello to kappa's merger!")
-print("*******************************\n")
-
-# read arguments, set input directory and output file
-argList = list(sys.argv)
-if len(argList) > 1:
-    inputDir = argList[1]
-    if not (os.path.isdir(inputDir)):
-        exit()
-    outputFile = argList[2]
-    print("Dir and File argument ok!\n")
-else:
-    inputDir = ""
-    outputFile = "_.csv"
-    print("Standard Dir and File set!\n")
-
-for i in [1, 2, 3, 4]:
-    filepath = get_file_name(inputDir, i)
-    if not os.path.isfile(filepath):
-        print("At least one file missing! Program stops!")
-        exit()
-    else:
-        print(filepath + " found")
-
-print("\nStart creating CSV...\n")
-with open(outputFile, 'w', newline='') as csvfile:
-    writer = csv.writer(csvfile, delimiter=';',
-                            quotechar='|', quoting=csv.QUOTE_MINIMAL)
-    for filenumber in [1, 2, 3, 4]:
-        filepath = get_file_name(inputDir, i)
-        with open(filepath, "r") as file:
-            for line in file:
-                if line.__contains__("5:"):
-                    break
-                line = line.rstrip()
-                if line.__contains__(":"):
-                    movie_id = line.replace(":", "")
-                    continue
-                line = line.split(",")
-                writer.writerow([int(movie_id)] + [line[0]] + [line[1]] + [line[2]])
-        print(filepath + " done.")
-
-
-# say bye
-print("\n*******************************")
-print("Finished merge. CSV saved to " + outputFile + ". See you!")
-print("*******************************\n")
+if __name__ == "__main__":
+    run()
