@@ -1,6 +1,8 @@
 import sys
 import os
 
+## Big Data Group Kappa
+## Authors: Weidele, Bauer, Pruell, Tomondy
 def run():
     if len(sys.argv) < 3:
         print("Please provide a directory and output file name")
@@ -37,3 +39,4 @@ def run():
 
 if __name__ == "__main__":
     run()
+
