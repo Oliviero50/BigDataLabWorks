@@ -2,40 +2,66 @@ import sys
 import os
 import re
 
+EXPECTED_NUM_OF_LINES = 20
+
 ## Big Data Group Kappa
 ## Authors: Weidele, Bauer, Pruell, Tomondy
 def run():
-    if len(sys.argv) < 1:
-        print("Please provide the input file name")
+    if len(sys.argv) < 3:
+        print("Parameters missing")
         sys.exit(1)
 
-    path = sys.argv[0]
-    if not os.path.isfile(path):
-        print('Not a file')
-        sys.exit(1)
+    inputFileName = sys.argv[1]
+    inputFile = open(inputFileName)
 
-
-    filename = sys.argv[0]
-    file = open(filename)
+    outputFileName = sys.argv[2]
+    outputFile = open(outputFileName, "w+")
+ 
     print("Is the file valid?")
-    print(isValid(file))
+    errors = isValid(inputFile)
+    if(len(errors) == 0):
+        print("Data is beautiful")
+        outputFile.write("Data is beautiful")
+    else:
+        print("Data inconsistency found:")
+        outputFile.write("Data inconsistency found: \n")
+        for err in errors:
+            print(err)
+            outputFile.write(err + "\n")
+    
+    inputFile.close()
+    outputFile.close()
+
 
 ##
 # Checks for:
-# Number of commas
-# Number of hayfns
-# Only numbers, commas, hayfns
-# TODO: Number of lines
+# Number of columns
+# Data format
+# Only valid characters
+# Number of lines
+# Returns list of errors
 ##
 def isValid(file):
+    numOfLines = 1
+    errors = []
+    for ch in file.readline():
+        if not ch.isdigit(): 
+            separator = ch
+            break
+
     for line in file:
-        if(line.count(",") != 3): 
-            return False
-        if(line.count("-") != 2): 
-            return False
-        if(bool(re.match('^[1234567890\-,]+$', line)) == False): 
-            return False   
-    return True
+        numOfLines += 1 
+        if(line.count(separator) != 3):
+            errors.append("Invalid number of columns found on line " + str(numOfLines))
+        if(line.count("-") != 2):
+            errors.append("Date format error on line " + str(numOfLines))
+        if(bool(re.match('^[0-9\-'+ separator +']+$', line)) == False): 
+            errors.append("Invalid character error on line " + str(numOfLines))
+            
+    if(numOfLines != EXPECTED_NUM_OF_LINES):
+        errors.append("Unexpected number of lines in the file!")
+
+    return errors
 
 
 if __name__ == "__main__":
