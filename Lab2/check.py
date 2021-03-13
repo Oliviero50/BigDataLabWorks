@@ -2,7 +2,7 @@ import sys
 import os
 import re
 
-EXPECTED_NUM_OF_LINES = 20
+EXPECTED_NUM_OF_LINES = 100480507
 
 ## Big Data Group Kappa
 ## Authors: Weidele, Bauer, Pruell, Tomondy
