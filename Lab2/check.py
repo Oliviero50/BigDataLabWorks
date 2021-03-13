@@ -61,7 +61,11 @@ def isValid(file):
     while True:
         line = file.readline().rstrip()
         if not line:
-            break
+            if numOfLines < EXPECTED_NUM_OF_LINES:
+                errors.append("Empty line between data found on line " + str(numOfLines +1))
+            else:
+                break
+
         numOfLines += 1 
         if(line.count(separator) != 3):
             errors.append("Invalid number of columns found on line " + str(numOfLines))
