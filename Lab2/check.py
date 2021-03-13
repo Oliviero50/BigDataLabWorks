@@ -2,7 +2,7 @@ import sys
 import os
 import re
 
-EXPECTED_NUM_OF_LINES = 100480507
+EXPECTED_NUM_OF_LINES = 20
 
 ## Big Data Group Kappa
 ## Authors: Weidele, Bauer, Pruell, Tomondy
@@ -42,14 +42,26 @@ def run():
 # Returns list of errors
 ##
 def isValid(file):
-    numOfLines = 1
+    numOfLines = 0
     errors = []
-    for ch in file.readline():
-        if not ch.isdigit(): 
+    ## Check for header
+    firstLine = file.readline()
+
+    for ch in firstLine:
+        hasHeader = not ch.isdigit()
+        break
+
+    for ch in firstLine:     
+        if not ch.isalnum(): 
             separator = ch
             break
 
-    for line in file:
+    if not hasHeader: file.seek(0)
+
+    while True:
+        line = file.readline().rstrip()
+        if not line:
+            break
         numOfLines += 1 
         if(line.count(separator) != 3):
             errors.append("Invalid number of columns found on line " + str(numOfLines))
