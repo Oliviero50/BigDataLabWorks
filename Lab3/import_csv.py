@@ -39,6 +39,7 @@ with open(path, "r") as f:
         
         line = line.rstrip().split(",")
 
+        # TODO: Datum kommt als string an in DB, keine ahnung wie mans als Date speichert...
         rows.append({"movie_id": int(line[0]), "userd_id": int(line[1]), "rating": int(line[2]), "time": line[3]})
         batch_counter += 1
 
