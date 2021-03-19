@@ -34,39 +34,63 @@ db = client.movies
 #a
 # Compute the average rating, lowest rating, highest rating and
 # number of ratings per movie
-moviegroup = db.reviews.aggregate(
-# The Aggregation Pipeline is defined as an array of different operations
-[
-# The first stage in this pipe is to group data
-{ '$group':
-    { '_id': "$movie_id",
-        "count": 
-            { '$sum' : 1 },
-        "average":
-            { '$avg': '$rating'},
-        "min":
-            { '$min': '$rating'},
-        "max":
-            { '$max': '$rating'}
-    }
-},
-# The second stage in this pipe is to sort the data
-{"$sort":  { "_id": 1}
-}
-# Close the array with the ] tag             
+
+""" moviegroup = db.reviews.aggregate([
+    { '$group':
+        { '_id': "$movie_id",
+            "count": 
+                { '$sum' : 1 },
+            "average":
+                { '$avg': '$rating'},
+            "min":
+                { '$min': '$rating'},
+            "max":
+                { '$max': '$rating'}
+        }
+    },
+    {"$sort":  { "_id": 1}}          
 ] )
-# Print the result
+
 for group in moviegroup:
-    print(group)
+    print(group) """
 
 
 #b
 # Get the movie with the lowest overall rating.
 # If the movies are tied for rating, take the movie with the lowest movie_id
 
+lowestrating = db.reviews.aggregate(
+[
+{   '$group':
+        {   '_id': '$movie_id',
+            'overall':
+                {'$avg': {'$sum': '$rating'}}
+        }},
+        {'$sort': {'overall': 1}},
+        {'$limit': 1}
+])
+
+for group in lowestrating:
+    print(group)
+
+
 #c
 # Get the movie with the highest overall rating.
 # If the movies are tied for rating, take the movie with the lowest movie_id
+
+highestrating = db.reviews.aggregate(
+[
+{   '$group':
+        {   '_id': '$movie_id',
+            'overall':
+                {'$avg': {'$sum': '$rating'}}
+        }},
+        {'$sort': {'overall': -1}},
+        {'$limit': 1}
+])
+
+for group in highestrating:
+    print(group)
 
 #d
 # Get the number of ratings in February 2002

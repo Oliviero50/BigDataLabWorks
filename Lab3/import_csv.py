@@ -30,6 +30,7 @@ with open(path, "r") as f:
             result = db.reviews.insert_many(rows)
             rows = []
 
+        # TODO: Remove
         if batch_counter > 10_000_000:
             break
 
