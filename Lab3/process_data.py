@@ -66,7 +66,7 @@ lowestrating = db.reviews.aggregate(
             'overall':
                 {'$avg': {'$sum': '$rating'}}
         }},
-        {'$sort': {'overall': 1}},
+        {'$sort': {'overall': 1, '_id': 1}},
         {'$limit': 1}
 ])
 
@@ -85,7 +85,7 @@ highestrating = db.reviews.aggregate(
             'overall':
                 {'$avg': {'$sum': '$rating'}}
         }},
-        {'$sort': {'overall': -1}},
+        {'$sort': {'overall': -1, '_id': 1}},
         {'$limit': 1}
 ])
 
@@ -99,7 +99,22 @@ for group in highestrating:
 # Get the user that creates the lowest average rating and has rated at least 5 times.
 # If two users are tied, use the one with the lower user_id
 
+lowest_user_rating = db.reviews.aggregate(
+[
+{   '$group':
+        {   '_id': '$userd_id',
+            'overall':
+                {'$avg': {'$sum': '$rating'}}
+        }},
+        {'$sort': {'overall': 1, '_id': 1}},
+        {'$limit': 1}
+        
+])
+
+for group in lowest_user_rating:
+    print(group)
+
 #f
 # For the movie “The Spy Who Loved Me”:
-# Get the averagerating for each year and month sorted by year and month in
+# Get the average rating for each year and month sorted by year and month in
 # ascending order
