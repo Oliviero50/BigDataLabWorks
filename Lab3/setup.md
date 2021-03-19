@@ -1,0 +1,1 @@
+sudo docker run -d --rm --name mymongo -p 27017-27019:27017-27019 mongo:latest
