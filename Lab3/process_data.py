@@ -36,6 +36,11 @@ print("Quering data: ")
 # Compute the average rating, lowest rating, highest rating and
 # number of ratings per movie
 
+# Possible query with lookup from titles collection
+# TODO: Check if necessary
+# db.reviews.aggregate([{$group: {_id: "$movie_id", avg: {$avg: "$rating"}, min: {$min: "$rating"}, max: {$max: "$rating"}, sum: {$sum: "$rating"}}}, {$lookup: {from: "titles", localField: "_id", foreignField: "_id", as: "title"}}])
+
+
 """ moviegroup = db.reviews.aggregate([
     { '$group':
         { '_id': "$movie_id",
