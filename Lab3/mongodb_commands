@@ -1,0 +1,124 @@
+# Reference
+db.reviews.aggregate(
+    [
+        {$match: {movie_id: 1}}, 
+        {$group: {_id: "$movie_id", total_reviews: {$sum: "$rating"}}}, 
+        {$lookup: 
+            {
+                from: "titles", 
+                localField: "_id", 
+                foreignField: "_id", 
+                as: "titles"
+            }
+        },
+        {
+            $unwind: "$titles",
+        },
+        {
+            $project: {
+                _id:0,
+                total_reviews:1,
+                movie_title: "$titles.title"
+            }
+        }
+    ]
+);
+
+#a 
+db.reviews.aggregate([
+    { '$group':
+        { '_id': "$movie_id",
+            "count": 
+                { '$sum' : 1 },
+            "average":
+                { '$avg': '$rating'},
+            "min":
+                { '$min': '$rating'},
+            "max":
+                { '$max': '$rating'}
+        }
+    },
+    {"$sort":  { "_id": 1}},
+      {$lookup: 
+            {
+                from: "titles", 
+                localField: "_id", 
+                foreignField: "_id", 
+                as: "titles"
+            }
+        },
+        {
+            $unwind: "$titles",
+        },
+        {
+            $project: {
+                _id:0,
+                movie_title: "$titles.title",
+                count: 1,
+                average: 1,
+                min: 1,
+                max: 1
+            }
+        }        
+] )
+
+#b
+db.reviews.aggregate(
+[
+{   '$group':
+        {   '_id': '$movie_id',
+            'overall':
+                {'$avg': {'$sum': '$rating'}}
+        }},
+        {'$sort': {'overall': 1, '_id': 1}},
+        {'$limit': 1},
+        {$lookup: 
+            {
+                from: "titles", 
+                localField: "_id", 
+                foreignField: "_id", 
+                as: "titles"
+            }
+        },
+        {
+            $unwind: "$titles",
+        },
+        {
+            $project: {
+                _id:0,
+                movie_title: "$titles.title",
+                overall: 1,
+            }
+        }   
+])
+
+#c
+db.reviews.aggregate(
+[
+{   '$group':
+        {   '_id': '$movie_id',
+            'overall':
+                {'$avg': {'$sum': '$rating'}}
+        }},
+        {'$sort': {'overall': -1, '_id': 1}},
+        {'$limit': 1},
+        {$lookup: 
+            {
+                from: "titles", 
+                localField: "_id", 
+                foreignField: "_id", 
+                as: "titles"
+            }
+        },
+        {
+            $unwind: "$titles",
+        },
+        {
+            $project: {
+                _id:0,
+                movie_title: "$titles.title",
+                overall: 1,
+            }
+        }  
+])
+
