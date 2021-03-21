@@ -1,8 +1,9 @@
 from pymongo import MongoClient
+from datetime import datetime, timedelta
 
 client = MongoClient("mongodb://localhost:27017")
 db = client.movies
-
+print("Quering data: ")
 # Get one
 #result = db.reviews.find_one({'rating': 5})
 #print(result)
@@ -70,6 +71,7 @@ lowestrating = db.reviews.aggregate(
         {'$limit': 1}
 ])
 
+print("Move with the lowest rating: ")
 for group in lowestrating:
     print(group)
 
@@ -89,12 +91,19 @@ highestrating = db.reviews.aggregate(
         {'$limit': 1}
 ])
 
+print("Move with the highest rating: ")
 for group in highestrating:
     print(group)
 
 #d
 # Get the number of ratings in February 2002
+start_date = datetime.strptime('2002-02-01', '%Y-%m-%d')
+end_date = datetime.strptime('2002-02-28', '%Y-%m-%d')
 
+query = {"time": {"$gte": start_date, "$lte": end_date}}
+sum_ratings_feb = db.reviews.count_documents(query)
+
+print("Number of rating in February 2002:", sum_ratings_feb)
 #e
 # Get the user that creates the lowest average rating and has rated at least 5 times.
 # If two users are tied, use the one with the lower user_id
@@ -111,6 +120,7 @@ lowest_user_rating = db.reviews.aggregate(
         
 ])
 
+print("User that gives the lowest rating: ")
 for group in lowest_user_rating:
     print(group)
 

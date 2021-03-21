@@ -1,8 +1,9 @@
 import sys
 import os
+from datetime import datetime, timedelta
 from pymongo import MongoClient
 
-BATCH_SIZE = 1_000_000
+BATCH_SIZE = 100_000 #1_000_000
 
 
 
@@ -21,6 +22,8 @@ batch_counter = 1
 
 client = MongoClient("mongodb://localhost:27017")
 db = client.movies
+print("!!! Clearing data in the movies collection !!!")
+db.reviews.delete_many({})
 
 with open(path, "r") as f:
     while True:
@@ -31,7 +34,7 @@ with open(path, "r") as f:
             rows = []
 
         # TODO: Remove
-        if batch_counter > 10_000_000:
+        if batch_counter > 500_000: ### 10_000_000
             break
 
         line = f.readline()
@@ -39,9 +42,10 @@ with open(path, "r") as f:
             break
         
         line = line.rstrip().split(",")
+        ### Save date as a datetime object
+        date_of_rating = datetime.strptime(line[3], '%Y-%m-%d')
 
-        # TODO: Datum kommt als string an in DB, keine ahnung wie mans als Date speichert...
-        rows.append({"movie_id": int(line[0]), "userd_id": int(line[1]), "rating": int(line[2]), "time": line[3]})
+        rows.append({"movie_id": int(line[0]), "userd_id": int(line[1]), "rating": int(line[2]), "time": date_of_rating})
         batch_counter += 1
 
 print("Inserted " + str(db.reviews.count_documents({})) + " documents")
