@@ -4,44 +4,12 @@ from datetime import datetime, timedelta
 client = MongoClient("mongodb://localhost:27017")
 db = client.movies
 print("Quering data: ")
-# Get one
-#result = db.reviews.find_one({'rating': 5})
-# print(result)
-
-# Count with filter
-#result = db.reviews.count_documents({'rating': 5})
-# print(result)
-
-# Aggregate pipeline
-# stargroup = db.reviews.aggregate(
-# The Aggregation Pipeline is defined as an array of different operations
-# [
-# The first stage in this pipe is to group data
-# { '$group':
-#    { '_id': "$rating",
-#     "count" :
-#                 { '$sum' :1 }
-#    }
-# },
-# The second stage in this pipe is to sort the data
-# {"$sort":  { "_id":1}
-# }
-# Close the array with the ] tag
-# ] )
-# Print the result
-# for group in stargroup:
-#    print(group)
 
 # a
 # Compute the average rating, lowest rating, highest rating and
 # number of ratings per movie
 
-# Possible query with lookup from titles collection
-# TODO: Check if necessary
-# db.reviews.aggregate([{$group: {_id: "$movie_id", avg: {$avg: "$rating"}, min: {$min: "$rating"}, max: {$max: "$rating"}, sum: {$sum: "$rating"}}}, {$lookup: {from: "titles", localField: "_id", foreignField: "_id", as: "title"}}])
-
-
-""" moviegroup = db.reviews.aggregate([
+moviegroup = db.reviews.aggregate([
     { '$group':
         { '_id': "$movie_id",
             "count": 
@@ -60,7 +28,7 @@ print("Quering data: ")
 ] )
 
 for group in moviegroup:
-    print(group) """
+    print(group)
 
 
 # b
@@ -114,6 +82,7 @@ query = {"time": {"$gte": start_date, "$lte": end_date}}
 sum_ratings_feb = db.reviews.count_documents(query)
 
 print("Number of rating in February 2002:", sum_ratings_feb)
+
 # e
 # Get the user that creates the lowest average rating and has rated at least 5 times.
 # If two users are tied, use the one with the lower user_id
