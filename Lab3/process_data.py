@@ -54,7 +54,9 @@ print("Quering data: ")
                 { '$max': '$rating'}
         }
     },
-    {"$sort":  { "_id": 1}}          
+    {"$sort":  { "_id": 1}},
+        {'$lookup': {'from': 'titles', 'localField': '_id', 'foreignField': '_id', 'as': 'title'}},
+        {'$project': {'overall': 1, 'title.title': 1, 'çount': 1, 'average': 1, 'min': 1, 'max': 1, '_id': 0}}
 ] )
 
 for group in moviegroup:
@@ -73,13 +75,14 @@ lowestrating = db.reviews.aggregate(
           {'$avg': {'$sum': '$rating'}}
           }},
         {'$sort': {'overall': 1, '_id': 1}},
-        {'$limit': 1}
+        {'$limit': 1},
+        {'$lookup': {'from': 'titles', 'localField': '_id', 'foreignField': '_id', 'as': 'title'}},
+        {'$project': {'overall': 1, 'title.title': 1, '_id': 0}}
     ])
 
 print("Move with the lowest rating: ")
 for group in lowestrating:
     print(group)
-
 
 # c
 # Get the movie with the highest overall rating.
@@ -93,7 +96,9 @@ highestrating = db.reviews.aggregate(
           {'$avg': {'$sum': '$rating'}}
           }},
         {'$sort': {'overall': -1, '_id': 1}},
-        {'$limit': 1}
+        {'$limit': 1},
+        {'$lookup': {'from': 'titles', 'localField': '_id', 'foreignField': '_id', 'as': 'title'}},
+        {'$project': {'overall': 1, 'title.title': 1, '_id': 0}}
     ])
 
 print("Move with the highest rating: ")

@@ -29,7 +29,7 @@ db = client.movies
 print("!!! Clearing data in the titles collection !!!")
 db.titles.delete_many({})
 
-with open(movie_path, "r") as f:
+with open(movie_path, "r", encoding = "ISO-8859-1") as f:
 
     line = f.readline()
 
@@ -48,7 +48,7 @@ with open(movie_path, "r") as f:
                 line_ar[1]), "title": str(line_ar[2])})
         line = f.readline()
 
-f.close()
+print("Inserting data innto db...")
 result = db.titles.insert_many(movie_rows)
 print("Inserted " + str(db.titles.count_documents({})) + " title documents")
 
@@ -64,8 +64,8 @@ with open(path, "r") as f:
             rows = []
 
         # TODO: Remove
-        if batch_counter > 500_000:  # 10_000_000
-            break
+        #if batch_counter > 500_000:  # 10_000_000
+        #    break
 
         line = f.readline()
         if not line:
