@@ -22,15 +22,16 @@ moviegroup = db.reviews.aggregate([
                 { '$max': '$rating'}
         }
     },
+    {"$limit": 5},
     {"$sort":  { "_id": 1}},
-        {'$lookup': {'from': 'titles', 'localField': '_id', 'foreignField': '_id', 'as': 'title'}},
-        {'$project': {'overall': 1, 'title.title': 1, 'çount': 1, 'average': 1, 'min': 1, 'max': 1, '_id': 0}}
+    {'$lookup': {'from': 'titles', 'localField': '_id', 'foreignField': '_id', 'as': 'title'}},
+    {'$project': {'overall': 1, 'title.title': 1, 'çount': 1, 'average': 1, 'min': 1, 'max': 1, '_id': 0}}
 ] )
 
 for group in moviegroup:
     print(group)
 
-
+'''
 # b
 # Get the movie with the lowest overall rating.
 # If the movies are tied for rating, take the movie with the lowest movie_id
@@ -138,3 +139,4 @@ average_ratings_over_time = db.reviews.aggregate(
 print("Average ratings over time:")
 for r in average_ratings_over_time:
     print(r)
+'''
