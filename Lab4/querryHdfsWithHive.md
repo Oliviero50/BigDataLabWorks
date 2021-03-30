@@ -1,11 +1,14 @@
+# Setup
+
 1. Azure Cluster Overview
 2. Overview -> Dashboards -> Ambari views
 3. Hive View 2.0
 4. Create external table:
 
-- Checkouts are in dir /data
-- Inventory is in dir /inventory
+* Checkouts are in dir /data
+* Inventory is in dir /inventory
 
+```sql
 DROP TABLE lab04data;
 CREATE EXTERNAL TABLE lab04data(
     BibNumber string,
@@ -19,7 +22,9 @@ FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
 LOCATION 'hdfs://hn0-lab04.y4tcsfbxfosevo2xcke2rpws2e.parx.internal.cloudapp.net/data/'
 tblproperties ("skip.header.line.count"="1");
+```
 
+```sql
 DROP TABLE lab04inventory;
 CREATE EXTERNAL TABLE lab04inventory(
     BibNumber string,
@@ -42,21 +47,29 @@ WITH SERDEPROPERTIES (
 ) 
 LOCATION 'hdfs://hn0-lab04.k4pktlmweozepoyrr5xj4ov4jf.frax.internal.cloudapp.net/inventory/'
 tblproperties ("skip.header.line.count"="1");
+```
 
 5. Location = headnode + directory in HDFS
 
-# Querry date
+# Querries
+
+## Querry date
+```sql
 select *
 from lab04data
 WHERE from_unixtime(unix_timestamp(CheckoutDateTime,"MM/dd/yyyy hh:mm:ss aaa"), "MM/dd/yyyy hh:mm:ss aaa") = "11/21/2006 05:44:00 PM";
+```
 
-# Querry author
+## Querry author
+```sql
 select * 
 from lab04inventory
 WHERE author = "O'Ryan, Ellie";
+```
 
-# Join
+## Join
+```sql
 SELECT *
 FROM lab04data
 JOIN lab04inventory ON (lab04data.bibnumber = lab04inventory.bibnum);
-
+```
