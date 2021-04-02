@@ -51,16 +51,16 @@ tblproperties ("skip.header.line.count"="1");
 
 5. Location = headnode + directory in HDFS
 
-# Querries
+# Queries
 
-## Querry date
+## Query date
 ```sql
 select *
 from lab04data
 WHERE from_unixtime(unix_timestamp(CheckoutDateTime,"MM/dd/yyyy hh:mm:ss aaa"), "MM/dd/yyyy hh:mm:ss aaa") = "11/21/2006 05:44:00 PM";
 ```
 
-## Querry author
+## Query author
 ```sql
 select * 
 from lab04inventory
