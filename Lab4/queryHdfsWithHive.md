@@ -20,7 +20,7 @@ CREATE EXTERNAL TABLE lab04data(
 ROW FORMAT DELIMITED
 FIELDS TERMINATED BY ','
 STORED AS TEXTFILE
-LOCATION 'hdfs://hn0-lab04.y4tcsfbxfosevo2xcke2rpws2e.parx.internal.cloudapp.net/data/'
+LOCATION 'hdfs://hn0-lab04c.gyefre0bcfgunl1cebsurirggg.frax.internal.cloudapp.net/data/'
 tblproperties ("skip.header.line.count"="1");
 ```
 
@@ -72,4 +72,24 @@ WHERE author = "O'Ryan, Ellie";
 SELECT *
 FROM lab04data
 JOIN lab04inventory ON (lab04data.bibnumber = lab04inventory.bibnum);
+```
+
+## Ausleihen pro Jahr   
+```sql
+SELECT COUNT(*) AS TotalCount,
+YEAR(from_unixtime(unix_timestamp(CheckoutDateTime,"MM/dd/yyyy hh:mm:ss aaa")))
+AS year
+FROM lab04data
+GROUP BY YEAR(from_unixtime(unix_timestamp(CheckoutDateTime,"MM/dd/yyyy hh:mm:ss aaa")))
+ORDER BY year;
+```
+
+## Top 10 books alltime
+```sql
+SELECT COUNT(*) AS TotalCount, lab04data.bibnumber, lab04inventory.title
+FROM lab04data
+JOIN lab04inventory ON (lab04data.bibnumber = lab04inventory.bibnumber)
+GROUP BY lab04data.bibnumber, lab04inventory.title
+ORDER BY totalcount DESC
+LIMIT 10;
 ```
