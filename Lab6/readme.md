@@ -57,4 +57,32 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1 spark.p
 - [Spark Structured Streaming](https://spark.apache.org/docs/2.1.3/structured-streaming-programming-guide.html)
 - [Spark SQL](https://spark.apache.org/docs/2.1.3/sql-programming-guide.html)
 
+# Data Format
+**PRODUCER:**
+``` json
+{
+"type":"LKW/PKW",
+"highway":"A1/A2/A3"
+"timestamp": 151564564564
+}
+```
+
+**SPARK SENDING TO NEW KAFKA TOPIC**
+``` json
+{
+"A1": {
+  "LKW": 5,
+  "PKW": 10
+},
+"A2": {
+  "LKW": 10,
+  "PKW": 50
+},
+"A3": {
+  "LKW": 80,
+  "PKW": 40
+}
+}
+```
+
 
