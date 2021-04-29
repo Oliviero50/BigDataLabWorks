@@ -1,12 +1,21 @@
 from kafka import KafkaProducer
 import time
 import random
+import json
 
 producer = KafkaProducer(bootstrap_servers=['localhost:9092'])
 
-counter = ["Apple", "Cat", "Dog"]
+def generateRandomData():
+   carType = ["LKW", "PKW"]
+   highway = ["A1", "A2", "A3"]
+   return {
+      "type": random.choice(carType),
+      "highway": random.choice(highway),
+      "timestamp": time.time()
+   }
 
 while True:
-   producer.send('testtopic', bytes(random.choice(counter) + " Hallo", 'utf-8'))
+   data = json.dumps(generateRandomData())
+   producer.send('testtopic', bytes(data, 'utf-8'))
    print("send...")
-   time.sleep(2)
+   time.sleep(1)
