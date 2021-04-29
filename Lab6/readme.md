@@ -62,7 +62,7 @@ spark-submit --packages org.apache.spark:spark-sql-kafka-0-10_2.12:3.1.1 spark.p
 ``` json
 {
 "type":"LKW/PKW",
-"highway":"A1/A2/A3"
+"highway":"A1/A2/A3",
 "timestamp": 151564564564
 }
 ```
