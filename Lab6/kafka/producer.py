@@ -11,11 +11,11 @@ def generateRandomData():
    return {
       "type": random.choice(carType),
       "highway": random.choice(highway),
-      "timestamp": time.time()
+      "timestamp": int(time.time())
    }
 
 while True:
    data = json.dumps(generateRandomData())
-   producer.send('testtopic', bytes(data, 'utf-8'))
+   producer.send('cartopic', bytes(data, 'utf-8'))
    print("send...")
    time.sleep(1)
