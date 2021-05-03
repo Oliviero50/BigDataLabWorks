@@ -25,32 +25,22 @@ df = spark \
     .option("subscribe", "cartopic") \
     .load()
 
-df.printSchema()
 tmp = df.selectExpr("CAST(value AS STRING)")
 cardata = tmp.select(
     from_json(col("value"), schema).alias("data")).select("data.*")
-cardata.printSchema()
 
-windowedCounts = cardata \
-    .groupBy(
-        window(cardata.timestamp, "10 seconds", "10 seconds"),
-        cardata.type
-    ).count()
-windowedCounts.printSchema()
-
-# query = windowedCounts.writeStream \
-#     .outputMode("complete") \
-#     .format("console") \
-#     .option('truncate', 'false') \
-#     .start()
+windowedCounts = cardata.groupBy(
+    window(cardata.timestamp, "10 seconds", "10 seconds"),
+    cardata.type
+).count()
 
 query = windowedCounts \
     .selectExpr("to_json(struct(*)) AS value") \
     .writeStream \
     .format("kafka") \
-    .outputMode("complete") \
-    .option("checkpointLocation", "./checkpoint") \
+    .outputMode("update") \
     .option("kafka.bootstrap.servers", "localhost:9092") \
+    .option("checkpointLocation", "./checkpoint") \
     .option("topic", "pyspark") \
     .start()
 
